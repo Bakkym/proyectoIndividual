@@ -1,62 +1,40 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'home.dart';
+import 'package:tclase/services/firebase_service.dart';
+import 'package:tclase/widgets/facebook_button_sign_in.dart';
+import 'package:tclase/widgets/google_button_sign_in.dart';
+import 'package:tclase/widgets/twitter_button_sign_in.dart';
 
-
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Mi aplicación con botones',
-      home: Login(),
-    );
-  }
-}
-
-class Login extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              },
-              child: const Text('Iniciar con Google'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              },
-              child: const Text('Facebook'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              },
-              child: const Text('Twitter'),
-              
-            ),
-          ],
+      title: 'Mi App',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Mi App'),
+        ),
+        body: Center(
+          child: FutureBuilder(
+            future: FirebaseService.firebaseInit(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done){
+                return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GoogleSignInButton(),
+                      FacebookSignInButton(),
+                      TwitterSignInButton()
+                    ]
+                  );
+              } else {
+                return const CircularProgressIndicator();
+              }
+            },
+          )
+          
         ),
       ),
     );
